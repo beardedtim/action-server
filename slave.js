@@ -16,13 +16,12 @@ const send = (socket, message) => socket && socket.write(parser.encode(message))
 const { startServer, getId, getSocket, setSocket, socketStream } = socketServer()
 
 // Then we start the server and get a stream of sockets back
-const serverStream = startServer()
+const serverStream = startServer(66543)
 
 // We also want to be able to handle workers in this file
 const workers = workerService({
   serverStream,
   getSocket,
-  send
 })
 
 // And of course a cache
@@ -43,6 +42,23 @@ const logSubscription = serverStream
     }
 
     cache.add(logItem)
+  })
+
+// We update any registered workers when we get a message
+const workerUpdateSubscription = serverStream
+  .subscribe(
+  ({ data, socket: _id }) => {
+    // Grab all of the workers for this action
+    const workerIds = workers.getWorkers(data.action)
+
+    // And for each of them
+    workerIds.forEach(socketId => {
+      // Get the worker socket
+      const socket = getSocket(socketId)
+
+      // Then send this message to the worker
+      send(socket, ({ data, sender: _id }))
+    })
   })
 
 // We tell any worker that registered all of the past

@@ -23,7 +23,7 @@ client.write(
     data: {
       action: 'REGISTER_WORKER',
       payload: {
-        register_to: ['CONNECTION']
+        register_to: ['SOME_ACTION']
       },
       get_history: true
     }

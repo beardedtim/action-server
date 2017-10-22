@@ -9,6 +9,10 @@ const inspectOpts = {
   getSocket: {
     message: 'You must give `workers` a way to get the streams by id',
     valid: a => typeof a === 'function'
+  },
+  send: {
+    message: 'You must give `workers` a way to send messages',
+    valid: a => typeof a === 'function'
   }
 }
 
@@ -40,7 +44,7 @@ const makeWorkers = opts => {
       workerIds.forEach(socketId => {
         const socket = getSocket(socketId)
 
-        send(socket, ({ data, sender: _id }))
+        config.send(socket, ({ data, sender: _id }))
       })
     }),
 
@@ -49,7 +53,8 @@ const makeWorkers = opts => {
     ({ data, socket }) => {
       data.payload.register_to.forEach(action => {
         const oldSockets = workers.get(action) || []
-        workers.set(action, oldSockets.concat(socket))
+        // Only want unique ids in this list
+        workers.set(action,[...new Set(oldSockets.concat(socket))])
       })
     }
     ),
@@ -98,7 +103,7 @@ module.exports = makeWorkers
  * 
  * @typedef {Object} SingleOpts
  * @property {string} message - The message the throw if not valid
- * @property {function(any): boolean} valid - The function to check if valid 
+ * @property {function(any): boolean} valid - The function to check if valid
  */
 
 

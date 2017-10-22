@@ -32,8 +32,7 @@ const inspectWith = opts => obj => {
   for(let key in opts) {
     const isValid = () => opts[key].valid(obj[key])
     if (!(key in obj) || !isValid()) {
-      console.log('uh oh')
-      throw new Error(opts.message)
+      throw new Error(opts[key].message)
     }
   }
 

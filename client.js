@@ -1,21 +1,8 @@
-const net = require('net')
+const makeClient = require('./modules/client')
 
-const makeParser = require('./modules/parser')
-const parser = makeParser()
+const { stream, send } = makeClient()
 
-
-const client = net.createConnection({ port: 65432 }, () => {
-  //'connect' listener
-  console.log('connected to server!')
-})
-
-client.on('data', (data) => {
-  console.log(parser.decode(data.toString()));
-})
-
-process.stdin.on('data', d => {
-  const message = d.toString()
-  client.write(parser.encode({
-    data: parser.decode(message)
-  }))
-})
+stream
+  .subscribe(
+    (data) => console.log('New message!', data)
+  )
