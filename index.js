@@ -78,3 +78,14 @@ const pastEventsSubscription = workerRegisteration
       }))
     }
   )
+
+const allEventsSubscriptions = workerRegisteration
+  .map(d => console.log(d) || d)
+  .filter(({ data: { payload: { register_to } }}) => register_to.indexOf('ALL') >= 0)
+  .flatMap(({ socket: _id }) => 
+    serverStream
+      .map(({ data, socket }) => ({ data, socket, worker: _id }))
+  )
+  .subscribe(
+    ({ data, worker }) => console.log(worker,'worker') || send(getSocket(worker), data)
+  )

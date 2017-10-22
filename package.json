@@ -3,7 +3,8 @@
     "nodemon": "^1.12.1",
     "redis": "^2.8.0",
     "rxjs": "^5.5.0",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "uws": "^8.14.1"
   },
   "name": "action-server",
   "version": "0.0.0-development",
