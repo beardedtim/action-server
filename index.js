@@ -103,5 +103,5 @@ const allEventsSubscriptions = workerRegisteration
   )
   .subscribe(
     // and for each time we get a message, let's tell the worker!
-    ({ data, worker }) => console.log(worker,'worker') || send(getSocket(worker), data)
+    ({ data, worker }) => send(getSocket(worker), data)
   )

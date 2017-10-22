@@ -7,11 +7,6 @@ const parser = makeParser()
 const client = net.createConnection({ port: 65432 }, () => {
   //'connect' listener
   console.log('connected to server!')
-  client.write(parser.encode({
-    data: {
-      type: 'SOME_ACTION'
-    }
-  }))
 })
 
 client.on('data', (data) => {
