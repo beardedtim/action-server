@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "nodemon": "^1.12.1",
+    "redis": "^2.8.0",
+    "rxjs": "^5.5.0",
+    "uuid": "^3.1.0"
+  },
+  "name": "action-server",
+  "version": "0.0.0-development",
+  "description": "A net server with JSON messaging",
+  "main": "index.js",
+  "repository": "git@github.com:beardedtim/action-server.git",
+  "author": "Tim Roberts <timiroberts@gmail.com>",
+  "license": "MIT"
+}
