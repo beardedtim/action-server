@@ -12,7 +12,7 @@
       const socket = new WebSocket('ws://localhost:8080')
 
       socket.onmessage = (d) => {
-        console.log(d)
+        console.log(JSON.parse(d.data))
       }
     })  
   </script>

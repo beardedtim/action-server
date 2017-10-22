@@ -1,6 +1,6 @@
 const net = require('net')
 
-const makeParser = require('./parser')
+const makeParser = require('./modules/parser')
 const parser = makeParser()
 
 
@@ -16,4 +16,11 @@ const client = net.createConnection({ port: 65432 }, () => {
 
 client.on('data', (data) => {
   console.log(parser.decode(data.toString()));
+})
+
+process.stdin.on('data', d => {
+  const message = d.toString()
+  client.write(parser.encode({
+    data: parser.decode(message)
+  }))
 })
