@@ -14,7 +14,13 @@ const inspectOpts = {
 
 const inspect = inspectWith(inspectOpts)
 
-module.exports = opts => {
+/**
+ * Creates a worker handler instance
+ * 
+ * @param {WorkerOptions} opts - The options for this instance
+ * @return {WorkerInstance} - An instance of these workers
+ */
+const makeWorkers = opts => {
   const config = inspect(opts)
 
   const { serverStream, getSocket } = config
@@ -84,3 +90,32 @@ module.exports = opts => {
     workerUnRegisteration
   })
 }
+
+module.exports = makeWorkers
+
+/**
+ * Our SingleOptions Object
+ * 
+ * @typedef {Object} SingleOpts
+ * @property {string} message - The message the throw if not valid
+ * @property {function(any): boolean} valid - The function to check if valid 
+ */
+
+
+/**
+ * Our Worker Options
+ * 
+ * @typedef {Object<string, SingleOpts>} WorkerOptions
+ */
+
+/**
+ * Our Worker Instance
+ * 
+ * @typedef {Object} WorkerInstance
+ * @property {function(string): [string]} getWorkers - Given an action, get all attached workers
+ * @property {function} clear - How we clear all workers
+ * @property {function} stop - How we stop all workers
+ * @property {function} start - How we re-create the instance
+ * @property {Observable} workerRegistration - An observable of workers registering
+ * @property {Observable} workerUnregisteration - An observable of workers unregistering
+ */

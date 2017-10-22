@@ -6,17 +6,6 @@
  */
 const ensure = (defaults, obj) => Object.assign({}, defaults, obj)
 
-const inspectOpts = {
-  serverStream: {
-    message: 'You must give `workers` a serverStream',
-    valid: a => a,
-  },
-  getSocket: {
-    message: 'You must give `workers` a way to get the streams by id',
-    valid: a => typeof a === 'function'
-  }
-}
-
 /**
  * Our inspection object
  * 

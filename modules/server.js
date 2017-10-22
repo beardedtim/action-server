@@ -7,12 +7,18 @@ const makeParser = require('./parser')
 const parser = makeParser()
 
 const DEFAULT_OPTS = {
-  SERVER_NAME: 'test_master',
-  MESSAGE_PREFIX: `MESSAGE_test_master`,
   parser
 }
 
-module.exports = (opts = {}) => {
+/**
+ * Server Factory
+ * 
+ * Creates a new net server instance returns streams
+ * 
+ * @param {ServerOptions} opts - Our options object
+ * @return {Server} - An instance of our server
+ */
+const makeServer = (opts = {}) => {
   // Configuration object
   const config = ensure(DEFAULT_OPTS, opts)
 
@@ -92,3 +98,48 @@ module.exports = (opts = {}) => {
     socketStream
   })
 }
+
+module.exports = makeServer
+
+/**
+ * A parser object
+ * 
+ * @typedef {Object} Parser
+ * @property {Function} encode - Encode a message
+ * @property {Function} decode - Decode a message
+ */
+
+/**
+ * makeServer Options Object
+ * 
+ * @typedef {Object} ServerOptions
+ * @property {Parser} parser
+ */
+
+
+/**
+ * A Net Socket
+ * 
+ * @typedef {Object} Socket
+ * 
+ * @property {function(string): void} write - How we send messages to the socket
+ */
+
+
+/**
+ * An RxJs Observable
+ * 
+ * @typedef {Object} Observable
+ */
+
+
+/**
+ * Our Server Instance
+ * 
+ * @typedef {Object} Server
+ * @property {function(number): Observable} startServer - A function that binds to the given port
+ * @property {function(Object): string} getId - A function that returns the id given a socket
+ * @property {function(string): Object} getSocket - A function that returns the socket given an id
+ * @property {function(Socket): string} setSocket - Sets a socket into the server cache and returns the id
+ * @property {Observable} socketStream - A stream of socket connections
+ */
