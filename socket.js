@@ -14,8 +14,6 @@ const client = net.createConnection({ port: 65432 }, () => {
     })
   })
   
-  //'connect' listener
-  console.log('connected to server!')
   client.write(JSON.stringify({
     data: {
       action: 'REGISTER_WORKER',
