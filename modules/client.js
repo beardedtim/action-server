@@ -12,15 +12,11 @@ const DEFAULT_OPTS = {
   useStdIn: true
 }
 
-const setupStdIn = (send) => {
-  process.stdin.on('data', d => {
-    const message = d.toString()
+const getStdStream = (parserObservable) =>
+  Rx.Observable
+    .fromEvent(process.stdin, 'data')
+    .flatMap(parserObservable)
 
-    send({
-      data: parser.decode(message)
-    })
-  })
-}
 
 /**
  * Creates a Client instance
@@ -47,9 +43,6 @@ const makeClient = (opts = {}) => {
         .map(getData)
         .takeUntil(
           Rx.Observable.fromEvent(client, 'error')
-            .merge(
-              Rx.Observable.fromEvent(client, 'close')
-            )
         )
     )
   
@@ -57,13 +50,27 @@ const makeClient = (opts = {}) => {
     parser.encode(msg)
   )
 
+  let stdInSub = Rx.Observable.empty().subscribe()
+
   if (config.useStdIn) {
-    setupStdIn(send)
+    const parserObservable = data => Rx.Observable.of({
+      data: config.parser.decode(data.toString())
+    })
+    stdInSub = getStdStream(parserObservable)
+      .subscribe(send)
+  }
+
+  const tearDown = () => {
+    stdInSub.unsubscribe()
+    client.end(parser.encode({
+      action: 'CLIENT_DISCONNECT'
+    }))
   }
 
   return ({
     stream,
-    send, 
+    send,
+    stop: tearDown,
   })
 }
 
