@@ -2,36 +2,23 @@ const net = require('net')
 const Rx = require('rxjs')
 
 const makeParser = require('./modules/parser')
-const parser = makeParser()
+const makeClient = require('./modules/client')
 
-// Connect to master
-const client = net.createConnection({ port: 65432 })
+const { stream, send } = makeClient()
 
-// We are reading strings for now
-client.setEncoding('utf8')
+send({
+  data: {
+    action: 'REGISTER_WORKER',
+    payload: {
+      register_to: ['SOME_ACTION']
+    },
+    get_history: true
+  }
+})
 
-// Listen for work messages
-const workerStream = Rx.Observable.fromEvent(client, 'data')
-  .takeUntil(
-    Rx.Observable.fromEvent(client, 'error')
-      .merge(Rx.Observable.fromEvent(client, 'close'))
-  )
-
-// Register for work messages
-client.write(
-  parser.encode({
-    data: {
-      action: 'REGISTER_WORKER',
-      payload: {
-        register_to: ['SOME_ACTION']
-      },
-      get_history: true
-    }
-  })
-)
-
-workerStream.subscribe(
+stream.subscribe(
   msg => {
+    console.log('worker message!')
     console.log(msg)
   }
 )

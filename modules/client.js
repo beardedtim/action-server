@@ -22,12 +22,18 @@ const setupStdIn = (send) => {
   })
 }
 
+/**
+ * Creates a Client instance
+ * 
+ * @param {ClientConfig} opts - Our client options
+ * @return {Client}
+ */
 const makeClient = (opts = {}) => {
   const config = ensure(DEFAULT_OPTS, opts)
 
   const client = net.createConnection({ port: config.port }, () => {})
 
-  const getData = msg => config.parser.decode(msg.toString()).data
+  const getData = msg => config.parser.decode(msg.toString())
 
   const stream = Rx.Observable
     .of({
@@ -62,3 +68,19 @@ const makeClient = (opts = {}) => {
 }
 
 module.exports = makeClient
+
+/**
+ * Our config
+ * 
+ * @typedef {Object} ClientConfig
+ * @property {number} port - The port to connect to
+ * @property {Parser} parser - The parser to use for this service
+ */
+
+/**
+ * Our Client instance
+ * 
+ * @typedef {Object} Client
+ * @property {function(string): void} send - Sends a message to the server from client
+ * @property {Observable} stream - An observable of responses from the server
+ */

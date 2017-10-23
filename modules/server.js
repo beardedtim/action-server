@@ -95,7 +95,8 @@ const makeServer = (opts = {}) => {
     getId,
     getSocket,
     setSocket,
-    socketStream
+    socketStream,
+    stop: () => server.close()
   })
 }
 
